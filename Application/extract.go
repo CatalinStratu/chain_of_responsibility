@@ -10,7 +10,7 @@ import (
 )
 
 type Extract struct {
-	next dates
+	next step
 }
 
 type user struct {
@@ -26,6 +26,7 @@ var users []user
 var firstLine user
 
 func (t *Extract) Execute(i *Inputs) {
+
 	if i.extract {
 		t.next.Execute(i)
 		return
@@ -35,22 +36,30 @@ func (t *Extract) Execute(i *Inputs) {
 		t.dbExtract()
 	} else if i.Type == "File" {
 		t.txtExtract(i)
+	} else {
+		t.txtExtract(i)
 	}
-	fmt.Println(len(users))
+
 	i.extract = true
 	t.next.Execute(i)
 }
 
-func (t *Extract) SetNext(next dates) {
+func (t *Extract) SetNext(next step) {
 	t.next = next
 }
 
 func (t *Extract) dbExtract() {
 	db, err := sql.Open("mysql", "root:root@/gointernship")
 
+	err = db.Ping()
 	if err != nil {
-		panic(err)
+		return
 	}
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
@@ -61,8 +70,9 @@ func (t *Extract) dbExtract() {
 	rows, err := db.Query("SELECT * FROM users ORDER BY id")
 
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
+
 	defer func(rows *sql.Rows) {
 		err := rows.Close()
 		if err != nil {
@@ -71,19 +81,22 @@ func (t *Extract) dbExtract() {
 	}(rows)
 
 	for rows.Next() {
-		u := user{}
-		err := rows.Scan(&u.id, &u.firstName, &u.lastName, &u.email, &u.gender, &u.ipAddress)
-
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
+		u := readUserFromDB(rows)
 		users = append(users, u)
 	}
+
 	firstLine = users[0]
 	users = users[1:]
 }
 
+func readUserFromDB(rows *sql.Rows) user {
+	u := user{}
+	err := rows.Scan(&u.id, &u.firstName, &u.lastName, &u.email, &u.gender, &u.ipAddress)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return u
+}
 func (t *Extract) txtExtract(i *Inputs) {
 	file, err := os.Open(i.FileName)
 

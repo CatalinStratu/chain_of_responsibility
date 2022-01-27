@@ -3,12 +3,10 @@ package main
 import (
 	"bufio"
 	"database/sql"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"os"
 	"strings"
-	"sync"
 )
 
 func main() {
@@ -24,7 +22,7 @@ func main() {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			log.Fatal(err)
 		}
 	}(db)
 
@@ -42,24 +40,20 @@ func main() {
 		count++
 	}
 
-	var wg sync.WaitGroup
-
 	value := func(chunk []string) {
-
-		defer wg.Done()
 		var values []interface{}
-		queryStr := "INSERT INTO users (first_name, last_name, email, gender, ip_address) VALUES "
-
+		queryStr := "INSERT INTO users (first_name, last_name, email, gender, ip_address) VALUES  "
+		// slice de stringuri, nu de folosit Exec, de folosit ExecContext
 		for j := 0; j < len(chunk); j++ {
 			st := strings.Split(chunk[j], "|")
 			queryStr += "(?, ?, ?, ?, ?),"
 			values = append(values, st[1], st[2], st[3], st[4], st[5])
 		}
 
-		queryStr = queryStr[0 : len(queryStr)-1]
+		//queryStr = queryStr[0 : len(queryStr)-1]
 		_, err = db.Exec(queryStr, values...)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 	}
 
@@ -69,18 +63,6 @@ func main() {
 		if end > len(validLines) {
 			end = len(validLines)
 		}
-		wg.Add(1)
-		go value(validLines[i:end])
-		wg.Wait()
-	}
-
-	var countRows int
-
-	err = db.QueryRow("SELECT COUNT(*) FROM users").Scan(&countRows)
-	switch {
-	case err != nil:
-		log.Fatal(err)
-	default:
-		fmt.Printf("Number of rows are %s\n", count)
+		value(validLines[i:end])
 	}
 }

@@ -2,35 +2,40 @@ package Application
 
 import (
 	"encoding/csv"
-	"fmt"
-	"log"
+	"errors"
 	"os"
 	"strconv"
 )
 
 type Load struct {
-	next dates
+	next step
 }
 
-func (l *Load) Execute(i *Inputs) {
-	firstLineStr := []string{
-		firstLine.id,
-		firstLine.firstName,
-		firstLine.lastName,
-		firstLine.email,
-		firstLine.gender,
-		firstLine.ipAddress,
-	}
+func (l *Load) Execute(i *Inputs) error {
 
 	var divided [][]user
-
 	divided = arrayChunk(users, i.ChunkSize, divided)
 
-	writeInChunk(firstLineStr, divided)
-	fmt.Println("Datele au fost impartite in chunk-uri")
+	err := chunkGenerator(headerLine(firstLine), divided)
+	if err != nil {
+		return errors.New("chunk generator error")
+	}
+	return nil
 }
 
-func (l *Load) SetNext(next dates) {
+func headerLine(line user) []string {
+	header := []string{
+		line.id,
+		line.firstName,
+		line.lastName,
+		line.email,
+		line.gender,
+		line.ipAddress,
+	}
+	return header
+}
+
+func (l *Load) SetNext(next step) {
 	l.next = next
 }
 
@@ -49,40 +54,70 @@ func chunkName(number int) string {
 	return "./chunk_" + strconv.Itoa(number) + ".csv"
 }
 
-func writeInChunk(firstLine []string, divided [][]user) {
-	for i := 0; i < len(divided); i++ {
-		str := chunkName(i)
-		f, e := os.Create(str)
+func createChunk(i int, firstLine []string, divided [][]user) error {
+	str := chunkName(i)
+	f, e := os.Create(str)
 
-		if e != nil {
-			fmt.Println(e)
-		}
-
-		writer := csv.NewWriter(f)
-		if e != nil {
-			fmt.Println(e)
-		}
-
-		err := writer.Write(firstLine)
-		if err != nil {
-			log.Fatalf("Write string error %s", err)
-		}
-
-		for j := 0; j < len(divided[i]); j++ {
-			u := []string{
-				divided[i][j].id,
-				divided[i][j].firstName,
-				divided[i][j].lastName,
-				divided[i][j].email,
-				divided[i][j].gender,
-				divided[i][j].ipAddress,
-			}
-			err := writer.Write(u)
-			if err != nil {
-				log.Fatalf("Write string error %s", err)
-			}
-		}
-
-		writer.Flush()
+	if e != nil {
+		return errors.New("error creating file")
 	}
+
+	defer func(f *os.File) error {
+		err := f.Close()
+		if err != nil {
+			return errors.New("error closing file")
+		}
+		return nil
+	}(f)
+
+	writer := csv.NewWriter(f)
+	if e != nil {
+		return errors.New("error creating new writer")
+	}
+
+	err := writer.Write(firstLine)
+	if err != nil {
+		return errors.New("write first line error")
+	}
+
+	err = writeInChunk(divided[i], writer)
+	if err != nil {
+		return errors.New("write string error")
+	}
+	writer.Flush()
+	return nil
+}
+
+func chunkGenerator(firstLine []string, divided [][]user) error {
+	for i := 0; i < len(divided); i++ {
+		err := createChunk(i, firstLine, divided)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+type myWriter interface {
+	Write(record []string) error
+}
+
+type myWriterImpl struct {
+	err error
+}
+
+func (a myWriterImpl) Write(record []string) error {
+
+	return a.err
+}
+
+func writeInChunk(divided []user, writer myWriter) error {
+	for j := 0; j < len(divided); j++ {
+		u := []string{divided[j].id, divided[j].firstName, divided[j].lastName, divided[j].email, divided[j].gender, divided[j].ipAddress}
+		err := writer.Write(u)
+		if err != nil {
+			return errors.New("write string error")
+		}
+	}
+	return nil
 }
