@@ -5,19 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6a5f4f4c-98fb-4a37-bc53-c1d6f218a1bd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Application/load_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/deferExample/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Application/dates.go" beforeDir="false" afterPath="$PROJECT_DIR$/Application/step.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Application/extract_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Application/extract.go" beforeDir="false" afterPath="$PROJECT_DIR$/Application/extract.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Application/load.go" beforeDir="false" afterPath="$PROJECT_DIR$/Application/load.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Database/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/Database/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/sql/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/load_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/Application/load_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deferExample/main.go" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,8 +21,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Go File" />
         <option value="Go Application" />
+        <option value="Go File" />
       </list>
     </option>
   </component>
@@ -49,7 +43,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="DefaultGoTemplateProperty" value="Go Application" />
+    <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -67,7 +61,7 @@
       <recent name="C:\Users\Pap\GolandProjects\GoInternship_codeRefactoring" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.TestWriteInChunkCheckErrors in GoInternship_codeRefactoring/Application">
+  <component name="RunManager" selected="Go Build.go build GoInternship_codeRefactoring/test">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="GoInternship_codeRefactoring" />
       <working_directory value="$PROJECT_DIR$" />
@@ -84,6 +78,15 @@
       <package value="GoInternship_codeRefactoring" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build GoInternship_codeRefactoring/test" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="GoInternship_codeRefactoring" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="GoInternship_codeRefactoring/test" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/test/main.go" />
       <method v="2" />
     </configuration>
     <configuration name="TestArrayChunk in GoInternship_codeRefactoring/Application" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -110,18 +113,6 @@
       <pattern value="^\QTestChunkGenerator\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestTableHeaderLine in GoInternship_codeRefactoring/Application" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="GoInternship_codeRefactoring" />
-      <working_directory value="$PROJECT_DIR$/Application" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="GoInternship_codeRefactoring/Application" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestTableHeaderLine\E$" />
-      <method v="2" />
-    </configuration>
     <configuration name="TestWriteInChunkCheckErrors in GoInternship_codeRefactoring/Application" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="GoInternship_codeRefactoring" />
       <working_directory value="$PROJECT_DIR$/Application" />
@@ -146,11 +137,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build GoInternship_codeRefactoring/test" />
+        <item itemvalue="Go Build.go build GoInternship_codeRefactoring" />
         <item itemvalue="Go Test.TestWriteInChunkCheckErrors in GoInternship_codeRefactoring/Application" />
         <item itemvalue="Go Test.TestChunkGenerator in GoInternship_codeRefactoring/Application" />
         <item itemvalue="Go Test.TestArrayChunk in GoInternship_codeRefactoring/Application" />
-        <item itemvalue="Go Test.TestTableHeaderLine in GoInternship_codeRefactoring/Application" />
-        <item itemvalue="Go Build.go build GoInternship_codeRefactoring" />
       </list>
     </recent_temporary>
   </component>

@@ -11,8 +11,12 @@ type Load struct {
 	next step
 }
 
-func (l *Load) Execute(i *Inputs) error {
+func (l *Load) SetNext(next step) {
+	l.next = next
+}
 
+// Execute Function to divide users in chunks and write information in CSV files
+func (l *Load) Execute(i *Inputs) error {
 	var divided [][]user
 	divided = arrayChunk(users, i.ChunkSize, divided)
 
@@ -23,6 +27,7 @@ func (l *Load) Execute(i *Inputs) error {
 	return nil
 }
 
+// Creates the CSV file header
 func headerLine(line user) []string {
 	header := []string{
 		line.id,
@@ -35,10 +40,7 @@ func headerLine(line user) []string {
 	return header
 }
 
-func (l *Load) SetNext(next step) {
-	l.next = next
-}
-
+//Based on how many lines a chunk should have, he creates a slice of chunks
 func arrayChunk(validLines []user, chunkSize int, divided [][]user) [][]user {
 	for i := 0; i < len(validLines); i += chunkSize {
 		end := i + chunkSize
@@ -57,7 +59,6 @@ func chunkName(number int) string {
 func createChunk(i int, firstLine []string, divided [][]user) error {
 	str := chunkName(i)
 	f, e := os.Create(str)
-
 	if e != nil {
 		return errors.New("error creating file")
 	}
@@ -80,44 +81,33 @@ func createChunk(i int, firstLine []string, divided [][]user) error {
 		return errors.New("write first line error")
 	}
 
-	err = writeInChunk(divided[i], writer)
+	err = writeChunkInCSV(divided[i], writer)
 	if err != nil {
 		return errors.New("write string error")
 	}
-	writer.Flush()
 	return nil
 }
 
+//Generate the chunk name
 func chunkGenerator(firstLine []string, divided [][]user) error {
 	for i := 0; i < len(divided); i++ {
 		err := createChunk(i, firstLine, divided)
 		if err != nil {
-			return err
+			return errors.New("test")
 		}
 	}
 	return nil
 }
 
-type myWriter interface {
-	Write(record []string) error
-}
-
-type myWriterImpl struct {
-	err error
-}
-
-func (a myWriterImpl) Write(record []string) error {
-
-	return a.err
-}
-
-func writeInChunk(divided []user, writer myWriter) error {
+//Slice of uses in CSV file
+func writeChunkInCSV(divided []user, writer *csv.Writer) error {
 	for j := 0; j < len(divided); j++ {
 		u := []string{divided[j].id, divided[j].firstName, divided[j].lastName, divided[j].email, divided[j].gender, divided[j].ipAddress}
 		err := writer.Write(u)
 		if err != nil {
-			return errors.New("write string error")
+			return errors.New("test")
 		}
 	}
+	writer.Flush()
 	return nil
 }

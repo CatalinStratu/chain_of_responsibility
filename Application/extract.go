@@ -26,12 +26,10 @@ var users []user
 var firstLine user
 
 func (t *Extract) Execute(i *Inputs) {
-
 	if i.extract {
 		t.next.Execute(i)
 		return
 	}
-
 	if i.Type == "DataBase" {
 		t.dbExtract()
 	} else if i.Type == "File" {
@@ -50,7 +48,6 @@ func (t *Extract) SetNext(next step) {
 
 func (t *Extract) dbExtract() {
 	db, err := sql.Open("mysql", "root:root@/gointernship")
-
 	err = db.Ping()
 	if err != nil {
 		return
