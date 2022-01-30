@@ -3,6 +3,7 @@ package Application
 import (
 	"encoding/csv"
 	"errors"
+	"fmt"
 	"os"
 	"strconv"
 )
@@ -23,7 +24,7 @@ func (l *Load) Execute(i *Inputs) error {
 
 	err := chunkGenerator(headerLine(firstLine), divided)
 	if err != nil {
-		return errors.New("chunk generator error")
+		return errors.New(fmt.Sprintf("chunk generator error"))
 	}
 	return nil
 }
@@ -64,32 +65,32 @@ func chunkName(number int) string {
 //Create the chunk
 func createChunk(i int, firstLine []string, divided [][]user) error {
 	str := chunkName(i)
-	f, e := os.Create(str)
-	if e != nil {
-		return errors.New("error creating file")
+	f, err := os.Create(str)
+	if err != nil {
+		return errors.New(fmt.Sprintf("error creating file: \"%v\"", err))
 	}
 
 	defer func(f *os.File) error {
 		err := f.Close()
 		if err != nil {
-			return errors.New("error closing file")
+			return errors.New(fmt.Sprintf("error closing file: \"%v\"", err))
 		}
 		return nil
 	}(f)
 
 	writer := csv.NewWriter(f)
-	if e != nil {
-		return errors.New("error creating new writer")
+	if err != nil {
+		return errors.New(fmt.Sprintf("error creating new writer: \"%v\"", err))
 	}
 
-	err := writer.Write(firstLine)
+	err = writer.Write(firstLine)
 	if err != nil {
-		return errors.New("write first line error")
+		return errors.New(fmt.Sprintf("write first line error: \"%v\"", err))
 	}
 
 	err = writeChunkInCSV(divided[i], writer)
 	if err != nil {
-		return errors.New("write string error")
+		return errors.New(fmt.Sprintf("write chunk in CSV error: \"%v\"", err))
 	}
 	return nil
 }
@@ -99,7 +100,7 @@ func chunkGenerator(firstLine []string, divided [][]user) error {
 	for i := 0; i < len(divided); i++ {
 		err := createChunk(i, firstLine, divided)
 		if err != nil {
-			return errors.New("test")
+			return errors.New(fmt.Sprintf("Create chunk error: \"%v\"", err))
 		}
 	}
 	return nil
@@ -111,7 +112,7 @@ func writeChunkInCSV(divided []user, writer *csv.Writer) error {
 		u := []string{divided[j].id, divided[j].firstName, divided[j].lastName, divided[j].email, divided[j].gender, divided[j].ipAddress}
 		err := writer.Write(u)
 		if err != nil {
-			return errors.New("test")
+			return errors.New(fmt.Sprintf("Write in chunk error: \"%v\"", err))
 		}
 	}
 	writer.Flush()

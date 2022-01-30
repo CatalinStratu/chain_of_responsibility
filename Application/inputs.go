@@ -1,5 +1,6 @@
 package Application
 
+// Inputs structure
 type Inputs struct {
 	FileName  string
 	ChunkSize int

@@ -6,15 +6,20 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
 
+var (
+	ctx context.Context
+)
+
+// Extract structure
 type Extract struct {
 	next step
 }
 
+// User structure
 type user struct {
 	id        string
 	firstName string
@@ -24,11 +29,9 @@ type user struct {
 	ipAddress string
 }
 
-var (
-	ctx context.Context
-)
-
 var users []user
+
+//CSV header
 var firstLine user
 
 func (extract *Extract) Execute(input *Inputs) error {
@@ -44,10 +47,11 @@ func (extract *Extract) Execute(input *Inputs) error {
 		if err != nil {
 			return errors.New(fmt.Sprintf("Could not retrieve text from database: \"%v\"", err))
 		}
-	} else if input.Type == "File" {
-		extract.extractDatesFromTxtFile(input)
 	} else {
-		extract.extractDatesFromTxtFile(input)
+		err := extract.extractDatesFromTxtFile(input)
+		if err != nil {
+			return errors.New(fmt.Sprintf("Could not retrieve text from file:\"%v\"", err))
+		}
 	}
 
 	input.extract = true
@@ -76,13 +80,16 @@ func (extract *Extract) extractDatesFromDatabase() error {
 
 	if err != nil {
 		defer rows.Close()
-		return errors.New("query error")
+		return errors.New(fmt.Sprintf("Query error \"%v\"", err))
 	}
 
 	defer rows.Close()
 
 	for rows.Next() {
-		u := readUserFromDB(rows)
+		u, err := readRowFromDB(rows)
+		if err != nil {
+			return errors.New(fmt.Sprintf("Error read data row from DB and \"%v\"", err))
+		}
 		users = append(users, u)
 	}
 
@@ -92,21 +99,21 @@ func (extract *Extract) extractDatesFromDatabase() error {
 }
 
 // Read row from DataBase
-func readUserFromDB(rows *sql.Rows) user {
+func readRowFromDB(rows *sql.Rows) (user, error) {
 	u := user{}
 	err := rows.Scan(&u.id, &u.firstName, &u.lastName, &u.email, &u.gender, &u.ipAddress)
 	if err != nil {
-		fmt.Println(err)
+		return u, errors.New(fmt.Sprintf("Read date from DataBase"))
 	}
-	return u
+	return u, nil
 }
 
 // Extract dates from txt file
-func (extract *Extract) extractDatesFromTxtFile(i *Inputs) {
+func (extract *Extract) extractDatesFromTxtFile(i *Inputs) error {
 	file, err := os.Open(i.FileName)
 
 	if err != nil {
-		log.Fatalf("failed opening file: %s", err)
+		return errors.New(fmt.Sprintf("failed opening file: %s", err))
 	}
 
 	scanner := bufio.NewScanner(file)
@@ -126,4 +133,5 @@ func (extract *Extract) extractDatesFromTxtFile(i *Inputs) {
 
 	firstLine = users[0]
 	users = users[1:]
+	return nil
 }
