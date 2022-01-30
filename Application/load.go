@@ -11,6 +11,7 @@ type Load struct {
 	next step
 }
 
+// SetNext Set the next step
 func (l *Load) SetNext(next step) {
 	l.next = next
 }
@@ -27,7 +28,10 @@ func (l *Load) Execute(i *Inputs) error {
 	return nil
 }
 
-// Creates the CSV file header
+/*
+ Creates the CSV file header
+ Return slice of strings
+*/
 func headerLine(line user) []string {
 	header := []string{
 		line.id,
@@ -40,7 +44,7 @@ func headerLine(line user) []string {
 	return header
 }
 
-//Based on how many lines a chunk should have, he creates a slice of chunks
+//Based on how many lines should be in a chunk, it creates a chunk slice.
 func arrayChunk(validLines []user, chunkSize int, divided [][]user) [][]user {
 	for i := 0; i < len(validLines); i += chunkSize {
 		end := i + chunkSize
@@ -52,10 +56,12 @@ func arrayChunk(validLines []user, chunkSize int, divided [][]user) [][]user {
 	return divided
 }
 
+//Create the CSV file name
 func chunkName(number int) string {
 	return "./chunk_" + strconv.Itoa(number) + ".csv"
 }
 
+//Create the chunk
 func createChunk(i int, firstLine []string, divided [][]user) error {
 	str := chunkName(i)
 	f, e := os.Create(str)

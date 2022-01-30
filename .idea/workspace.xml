@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6a5f4f4c-98fb-4a37-bc53-c1d6f218a1bd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Application/extract_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Application/extract.go" beforeDir="false" afterPath="$PROJECT_DIR$/Application/extract.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Application/load.go" beforeDir="false" afterPath="$PROJECT_DIR$/Application/load.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Application/load_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/Application/load_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deferExample/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +58,7 @@
       <recent name="C:\Users\Pap\GolandProjects\GoInternship_codeRefactoring" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build GoInternship_codeRefactoring/test">
+  <component name="RunManager" selected="Go Build.go build GoInternship_codeRefactoring">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="GoInternship_codeRefactoring" />
       <working_directory value="$PROJECT_DIR$" />
@@ -137,8 +134,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build GoInternship_codeRefactoring/test" />
         <item itemvalue="Go Build.go build GoInternship_codeRefactoring" />
+        <item itemvalue="Go Build.go build GoInternship_codeRefactoring/test" />
         <item itemvalue="Go Test.TestWriteInChunkCheckErrors in GoInternship_codeRefactoring/Application" />
         <item itemvalue="Go Test.TestChunkGenerator in GoInternship_codeRefactoring/Application" />
         <item itemvalue="Go Test.TestArrayChunk in GoInternship_codeRefactoring/Application" />

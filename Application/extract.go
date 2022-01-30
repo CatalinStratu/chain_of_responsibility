@@ -2,7 +2,9 @@ package Application
 
 import (
 	"bufio"
+	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -22,60 +24,62 @@ type user struct {
 	ipAddress string
 }
 
+var (
+	ctx context.Context
+)
+
 var users []user
 var firstLine user
 
-func (t *Extract) Execute(i *Inputs) {
-	if i.extract {
-		t.next.Execute(i)
-		return
+func (extract *Extract) Execute(input *Inputs) error {
+	if input.extract {
+		err := extract.next.Execute(input)
+		if err != nil {
+			return errors.New(fmt.Sprintf("Could not extract data"))
+		}
 	}
-	if i.Type == "DataBase" {
-		t.dbExtract()
-	} else if i.Type == "File" {
-		t.txtExtract(i)
+
+	if input.Type == "DataBase" {
+		err := extract.extractDatesFromDatabase()
+		if err != nil {
+			return errors.New(fmt.Sprintf("Could not retrieve text from database: \"%v\"", err))
+		}
+	} else if input.Type == "File" {
+		extract.extractDatesFromTxtFile(input)
 	} else {
-		t.txtExtract(i)
+		extract.extractDatesFromTxtFile(input)
 	}
 
-	i.extract = true
-	t.next.Execute(i)
+	input.extract = true
+	err := extract.next.Execute(input)
+	if err != nil {
+		return errors.New(fmt.Sprintf("\"%v\"", err))
+	}
+	return nil
 }
 
-func (t *Extract) SetNext(next step) {
-	t.next = next
+// SetNext Set the next step
+func (extract *Extract) SetNext(next step) {
+	extract.next = next
 }
 
-func (t *Extract) dbExtract() {
+//Extract dates from Database
+func (extract *Extract) extractDatesFromDatabase() error {
 	db, err := sql.Open("mysql", "root:root@/gointernship")
-	err = db.Ping()
-	if err != nil {
-		return
+
+	if err := db.Ping(); err != nil {
+		defer db.Close()
+		return errors.New("database connection failed")
 	}
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-			log.Fatalf("failed open DB: %s", err)
-		}
-	}(db)
-
-	rows, err := db.Query("SELECT * FROM users ORDER BY id")
+	rows, err := db.QueryContext(ctx, "SELECT * FROM users ORDER BY id")
 
 	if err != nil {
-		log.Fatal(err)
+		defer rows.Close()
+		return errors.New("query error")
 	}
 
-	defer func(rows *sql.Rows) {
-		err := rows.Close()
-		if err != nil {
-			log.Fatalf("failed load rows: %s", err)
-		}
-	}(rows)
+	defer rows.Close()
 
 	for rows.Next() {
 		u := readUserFromDB(rows)
@@ -84,8 +88,10 @@ func (t *Extract) dbExtract() {
 
 	firstLine = users[0]
 	users = users[1:]
+	return nil
 }
 
+// Read row from DataBase
 func readUserFromDB(rows *sql.Rows) user {
 	u := user{}
 	err := rows.Scan(&u.id, &u.firstName, &u.lastName, &u.email, &u.gender, &u.ipAddress)
@@ -94,7 +100,9 @@ func readUserFromDB(rows *sql.Rows) user {
 	}
 	return u
 }
-func (t *Extract) txtExtract(i *Inputs) {
+
+// Extract dates from txt file
+func (extract *Extract) extractDatesFromTxtFile(i *Inputs) {
 	file, err := os.Open(i.FileName)
 
 	if err != nil {
