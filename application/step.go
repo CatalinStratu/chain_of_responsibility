@@ -1,4 +1,4 @@
-package Application
+package application
 
 type step interface {
 	Execute(*Inputs) error

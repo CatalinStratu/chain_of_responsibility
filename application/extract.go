@@ -1,8 +1,7 @@
-package Application
+package application
 
 import (
 	"bufio"
-	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -10,16 +9,12 @@ import (
 	"strings"
 )
 
-var (
-	ctx context.Context
-)
-
 // Extract structure
 type Extract struct {
 	next step
 }
 
-// User structure
+//User structure
 type user struct {
 	id        string
 	firstName string
@@ -29,6 +24,7 @@ type user struct {
 	ipAddress string
 }
 
+//All users extracted from the database
 var users []user
 
 //CSV header
@@ -72,18 +68,26 @@ func (extract *Extract) extractDatesFromDatabase() error {
 	db, err := sql.Open("mysql", "root:root@/gointernship")
 
 	if err := db.Ping(); err != nil {
-		defer db.Close()
-		return errors.New("database connection failed")
+		defer func(db *sql.DB) {
+			err := db.Close()
+			if err != nil {
+				return
+			}
+		}(db)
+		return errors.New(fmt.Sprintf("database connection failed \"%v\"", err))
 	}
 
-	rows, err := db.QueryContext(ctx, "SELECT * FROM users ORDER BY id")
+	rows, err := db.Query("SELECT * FROM users ORDER BY id")
 
 	if err != nil {
-		defer rows.Close()
+		defer func(rows *sql.Rows) {
+			err := rows.Close()
+			if err != nil {
+				return
+			}
+		}(rows)
 		return errors.New(fmt.Sprintf("Query error \"%v\"", err))
 	}
-
-	defer rows.Close()
 
 	for rows.Next() {
 		u, err := readRowFromDB(rows)

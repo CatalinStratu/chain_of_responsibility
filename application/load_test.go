@@ -1,8 +1,6 @@
-package Application
+package application
 
 import (
-	"errors"
-	"fmt"
 	"github.com/google/go-cmp/cmp"
 	"log"
 	"os"
@@ -80,11 +78,11 @@ func TestWriteInChunkCheckErrors(t *testing.T) {
 	var validLines []user
 	validLines = append(validLines, u1, u2)
 	//w := csv.NewWriter(os.Stdout)
-	w := myWriterImpl{err: errors.New("error")}
-	err := writeInChunk(validLines, w)
-	if err != nil {
-		return
-	}
+	//w := myWriterImpl{err: errors.New("error")}
+	//err := writeChunkInCSV(validLines, w)
+	//if err != nil {
+	//		return
+	//	}
 
 	// Write any buffered data to the underlying writer (standard output).
 	//w.Flush()
@@ -92,7 +90,7 @@ func TestWriteInChunkCheckErrors(t *testing.T) {
 	//	if err := w.Error(); err != nil {
 	//		t.Errorf("Data could not be written")
 	//	}
-	fmt.Errorf("asdasd")
+	//fmt.Errorf("asdasd")
 }
 
 func TestChunkGenerator(t *testing.T) {

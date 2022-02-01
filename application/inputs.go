@@ -1,4 +1,4 @@
-package Application
+package application
 
 // Inputs structure
 type Inputs struct {

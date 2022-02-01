@@ -1,7 +1,7 @@
 package main
 
 import (
-	"GoInternship_codeRefactoring/Application"
+	"GoInternship_codeRefactoring/application"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"os"
@@ -9,16 +9,15 @@ import (
 
 func main() {
 
-	//inputs := &Application.Inputs{FileName: "input.txt", ChunkSize: 1000, Type: "File"}
-	inputs := &Application.Inputs{FileName: "input2.txt", ChunkSize: 2, Type: "DataBase"}
+	//inputs := &application.Inputs{FileName: "input.txt", ChunkSize: 1000, Type: "File"}
+	inputs := &application.Inputs{FileName: "input.txt", ChunkSize: 1000, Type: "DataBase"}
 
-	load := &Application.Load{}
-	extract := &Application.Extract{}
-
+	load := &application.Load{}
+	extract := &application.Extract{}
 	extract.SetNext(load)
 	err := extract.Execute(inputs)
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		os.Exit(-1)
 	}
 }

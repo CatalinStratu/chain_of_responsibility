@@ -1,4 +1,4 @@
-package Application
+package application
 
 import (
 	"encoding/csv"
@@ -29,10 +29,7 @@ func (l *Load) Execute(i *Inputs) error {
 	return nil
 }
 
-/*
- Creates the CSV file header
- Return slice of strings
-*/
+//Creates the CSV file header
 func headerLine(line user) []string {
 	header := []string{
 		line.id,
