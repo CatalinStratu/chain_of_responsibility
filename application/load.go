@@ -112,7 +112,7 @@ func writeChunkInCSV(divided []user, writer *csv.Writer) (bool, error) {
 			return false, errors.New(fmt.Sprintf("Write in chunk error: \"%v\"", err))
 		}
 	}
-	writer.Flush()
 
+	writer.Flush()
 	return true, nil
 }
