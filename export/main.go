@@ -61,7 +61,6 @@ func main() {
 
 // Insert chunk in Database
 func insertChunk(chunk []string, db *sql.DB) {
-
 	var values []interface{}
 	queryStr := "INSERT INTO users (first_name, last_name, email, gender, ip_address) VALUES  "
 	for j := 0; j < len(chunk); j++ {

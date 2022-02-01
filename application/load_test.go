@@ -1,6 +1,8 @@
 package application
 
 import (
+	"encoding/csv"
+	"errors"
 	"github.com/google/go-cmp/cmp"
 	"log"
 	"os"
@@ -74,23 +76,23 @@ func TestArrayChunk(t *testing.T) {
 	}
 }
 
+type errorWriter struct{}
+
+func (e errorWriter) Write(b []byte) (int, error) {
+	return 0, errors.New("test")
+}
+
 func TestWriteInChunkCheckErrors(t *testing.T) {
 	var validLines []user
 	validLines = append(validLines, u1, u2)
-	//w := csv.NewWriter(os.Stdout)
-	//w := myWriterImpl{err: errors.New("error")}
-	//err := writeChunkInCSV(validLines, w)
-	//if err != nil {
-	//		return
-	//	}
-
-	// Write any buffered data to the underlying writer (standard output).
-	//w.Flush()
-
-	//	if err := w.Error(); err != nil {
-	//		t.Errorf("Data could not be written")
-	//	}
-	//fmt.Errorf("asdasd")
+	w := csv.NewWriter(errorWriter{})
+	w.Write([]string{""})
+	input, err := writeChunkInCSV(validLines, w)
+	expected := true
+	if input != expected || err != nil {
+		t.Errorf("Write in chunk was incorrect, got: %v, want: %v.", input, expected)
+		return
+	}
 }
 
 func TestChunkGenerator(t *testing.T) {

@@ -2,6 +2,7 @@ package application
 
 import (
 	"bufio"
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -23,6 +24,10 @@ type user struct {
 	gender    string
 	ipAddress string
 }
+
+var (
+	ctx context.Context
+)
 
 //All users extracted from the database
 var users []user
@@ -77,7 +82,9 @@ func (extract *Extract) extractDatesFromDatabase() error {
 		return errors.New(fmt.Sprintf("database connection failed \"%v\"", err))
 	}
 
-	rows, err := db.Query("SELECT * FROM users ORDER BY id")
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	rows, err := db.QueryContext(ctx, "SELECT * FROM users ORDER BY id")
 
 	if err != nil {
 		defer func(rows *sql.Rows) {

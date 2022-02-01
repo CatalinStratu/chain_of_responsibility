@@ -85,7 +85,7 @@ func createChunk(i int, firstLine []string, divided [][]user) error {
 		return errors.New(fmt.Sprintf("write first line error: \"%v\"", err))
 	}
 
-	err = writeChunkInCSV(divided[i], writer)
+	_, err = writeChunkInCSV(divided[i], writer)
 	if err != nil {
 		return errors.New(fmt.Sprintf("write chunk in CSV error: \"%v\"", err))
 	}
@@ -103,15 +103,16 @@ func chunkGenerator(firstLine []string, divided [][]user) error {
 	return nil
 }
 
-//Slice of uses in CSV file
-func writeChunkInCSV(divided []user, writer *csv.Writer) error {
+//Slice of users in CSV file
+func writeChunkInCSV(divided []user, writer *csv.Writer) (bool, error) {
 	for j := 0; j < len(divided); j++ {
 		u := []string{divided[j].id, divided[j].firstName, divided[j].lastName, divided[j].email, divided[j].gender, divided[j].ipAddress}
 		err := writer.Write(u)
 		if err != nil {
-			return errors.New(fmt.Sprintf("Write in chunk error: \"%v\"", err))
+			return false, errors.New(fmt.Sprintf("Write in chunk error: \"%v\"", err))
 		}
 	}
 	writer.Flush()
-	return nil
+
+	return true, nil
 }

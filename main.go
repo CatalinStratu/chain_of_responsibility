@@ -10,7 +10,7 @@ import (
 func main() {
 
 	//inputs := &application.Inputs{FileName: "input.txt", ChunkSize: 1000, Type: "File"}
-	inputs := &application.Inputs{FileName: "input.txt", ChunkSize: 1000, Type: "DataBase"}
+	inputs := &application.Inputs{FileName: "input.txt", ChunkSize: 100000, Type: "DataBase"}
 
 	load := &application.Load{}
 	extract := &application.Extract{}
